@@ -16,6 +16,7 @@ function App() {
         currentPlayer = "O";
       }
 
+      // Mảng lưu vị trí row/col selected trong gameBoard và currentPlayer(symbolPlayer)
       const updatedTurns = [
         { square: { row: rowIndex, col: colIndex }, player: currentPlayer },
 
@@ -47,9 +48,8 @@ function App() {
           onSelectSquare={handleSelectSquare}
           turns={gameTurns}
         ></GameBoard>
-
-        <Log></Log>
       </div>
+      <Log turns={gameTurns}></Log>
     </main>
   );
 }

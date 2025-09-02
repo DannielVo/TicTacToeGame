@@ -24,6 +24,7 @@ export default function GameBoard({ onSelectSquare, turns }) {
   }
   */
 
+  // Deriving state
   let gameBoard = initialGameBoard;
 
   for (const turn of turns) {
