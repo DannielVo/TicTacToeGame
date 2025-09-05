@@ -2,9 +2,16 @@ import { useState } from "react";
 import GameBoard from "./components/GameBoard";
 import Player from "./components/Player";
 import Log from "./components/Log";
+import { WINNING_COMBINATIONS } from "./assets/assets";
+
+const initialGameBoard = [
+  [null, null, null],
+  [null, null, null],
+  [null, null, null],
+];
 
 function deriveActivePlayer(gameTurns) {
-  // Suy ra người chơi hiện tại từ danh sách lượt đi
+  // Suy ra người chơi hiện tại từ danh sách lượt đi (gameTurns)
   let currentPlayer = "X";
 
   if (gameTurns.length > 0 && gameTurns[0].player === "X") {
@@ -19,6 +26,37 @@ function App() {
   const [gameTurns, setGameTurns] = useState([]);
 
   const activePlayer = deriveActivePlayer(gameTurns); // activePlayer để hiển thị UI hightlight ngchoi đg tới lượt
+  console.log("Active player: " + activePlayer);
+
+  let gameBoard = initialGameBoard;
+
+  for (const turn of gameTurns) {
+    const { square, player } = turn;
+    const { row, col } = square;
+
+    gameBoard[row][col] = player;
+  }
+
+  let winner = null;
+
+  for (const combination of WINNING_COMBINATIONS) {
+    const firstSquareSymbol =
+      gameBoard[combination[0].row][combination[0].column];
+
+    const secondSquareSymbol =
+      gameBoard[combination[1].row][combination[1].column];
+
+    const thirdSquareSymbol =
+      gameBoard[combination[2].row][combination[2].column];
+
+    if (
+      firstSquareSymbol &&
+      firstSquareSymbol === secondSquareSymbol &&
+      firstSquareSymbol === thirdSquareSymbol
+    ) {
+      winner = firstSquareSymbol;
+    }
+  }
 
   function handleSelectSquare(rowIndex, colIndex) {
     // setActivePlayer((curActivePlayer) => (curActivePlayer === "X" ? "O" : "X"));
@@ -30,6 +68,8 @@ function App() {
       // }
 
       let currentPlayer = deriveActivePlayer(prevTurns);
+
+      console.log("Current player: " + currentPlayer);
 
       // Mảng lưu vị trí row/col selected trong gameBoard và currentPlayer(symbolPlayer)
       const updatedTurns = [
@@ -59,9 +99,11 @@ function App() {
           ></Player>
         </ol>
 
+        {winner && <p>You won, {winner}!</p>}
+
         <GameBoard
           onSelectSquare={handleSelectSquare}
-          turns={gameTurns}
+          board={gameBoard}
         ></GameBoard>
       </div>
       <Log turns={gameTurns}></Log>
