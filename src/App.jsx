@@ -3,6 +3,7 @@ import GameBoard from "./components/GameBoard";
 import Player from "./components/Player";
 import Log from "./components/Log";
 import { WINNING_COMBINATIONS } from "./assets/assets";
+import GameOver from "./components/GameOver";
 
 const initialGameBoard = [
   [null, null, null],
@@ -26,7 +27,6 @@ function App() {
   const [gameTurns, setGameTurns] = useState([]);
 
   const activePlayer = deriveActivePlayer(gameTurns); // activePlayer để hiển thị UI hightlight ngchoi đg tới lượt
-  console.log("Active player: " + activePlayer);
 
   let gameBoard = initialGameBoard;
 
@@ -58,6 +58,8 @@ function App() {
     }
   }
 
+  const hasDraw = gameTurns.length === 9 && !winner;
+
   function handleSelectSquare(rowIndex, colIndex) {
     // setActivePlayer((curActivePlayer) => (curActivePlayer === "X" ? "O" : "X"));
     setGameTurns((prevTurns) => {
@@ -68,8 +70,6 @@ function App() {
       // }
 
       let currentPlayer = deriveActivePlayer(prevTurns);
-
-      console.log("Current player: " + currentPlayer);
 
       // Mảng lưu vị trí row/col selected trong gameBoard và currentPlayer(symbolPlayer)
       const updatedTurns = [
@@ -99,7 +99,7 @@ function App() {
           ></Player>
         </ol>
 
-        {winner && <p>You won, {winner}!</p>}
+        {(winner || hasDraw) && <GameOver winner={winner}></GameOver>}
 
         <GameBoard
           onSelectSquare={handleSelectSquare}
